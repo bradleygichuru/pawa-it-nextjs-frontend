@@ -8,7 +8,7 @@ export interface ChatMessageProps {
   message: string;
   role: string;
 }
-
+//Component to display Chat messages based on role 
 export function ChatMessage({message,role}:ChatMessageProps) {
   return (
     <div

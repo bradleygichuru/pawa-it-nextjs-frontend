@@ -10,28 +10,28 @@ import { ChatMessage, ChatMessageProps } from "@/components/chat-message";
 
 export function Chat() {
   //const { messages, input, handleInputChange, handleSubmit, isLoading }
-  const [isLoading, setIsloading] = useState(false);
-  const [messages, setMessages] = useState<Array<ChatMessageProps>>([]);
-  const [input, setInput] = useState<string>("");
+  const [isLoading, setIsloading] = useState(false); //Responisble for toggling loading state
+  const [messages, setMessages] = useState<Array<ChatMessageProps>>([]); //Stores Messages
+  const [input, setInput] = useState<string>(""); //Stores user query to be sent to the backend
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const scrollAreaRef = useRef<HTMLDivElement>(null);
 
   async function handleSubmit(e) {
     e.preventDefault();
-    setIsloading(true);
+    setIsloading(true); //Toogle loading state to queue loading visual elements to user
 
-    setMessages([...messages, { message: input, role: "user" }]);
+    setMessages([...messages, { message: input, role: "user" }]); //append message to state before query submission
     const formData = new FormData();
     formData.append("query", input);
     const req = await fetch("http://127.0.0.1:8000/ask", {
       body: formData,
       method: "POST",
-    });
+    }); //query backend for prompt answer from gemini api
     const data = await req.json();
     console.log(data);
     setIsloading(false);
 
-    setMessages([...messages, { message: data, role: "bot" }]);
+    setMessages([...messages, { message: data, role: "bot" }]); //Append query answer to message array
     setInput("");
     console.log("submitted");
   }
@@ -91,6 +91,7 @@ export function Chat() {
               }}
               onKeyDown={(e) => {
                 if (e.key === "Enter" && !e.shiftKey) {
+                  //treat Enter key press as form submission queue
                   e.preventDefault();
                   handleSubmit(e as any);
                 }
@@ -103,7 +104,7 @@ export function Chat() {
               size="icon"
               disabled={isLoading || input?.trim() === ""}
             >
-              {isLoading ? (
+              {isLoading ? ( //display spinner during loading
                 <Loader2 className="animate-spin" />
               ) : (
                 <>
